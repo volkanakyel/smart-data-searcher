@@ -1,25 +1,27 @@
-import Vue from "vue";
-import Vuex from "vuex";
+import { defineStore } from "pinia";
 import EventService from "@/services/EventServices.js";
 
-Vue.use(Vuex);
-
-export default new Vuex.Store({
-  state: {
+export const useUserStore = defineStore("users", {
+  state: () => ({
     users: [],
-  },
-  mutations: {
-    GET_USERS(state, users) {
-      state.users = users;
-    },
-  },
+    loading: false,
+    error: null,
+  }),
+
   actions: {
-    fetchUser({ commit }) {
-      EventService.getUsers().then((response) => {
-        console.log(response.data);
-        commit("GET_USERS", response.data);
-      });
+    async fetchUsers() {
+      this.loading = true;
+      this.error = null;
+      try {
+        const response = await EventService.getUsers();
+        this.users = response.data;
+        console.log("Fetched users:", this.users);
+      } catch (error) {
+        this.error = error.message;
+        console.error("Failed to fetch users:", error);
+      } finally {
+        this.loading = false;
+      }
     },
   },
-  modules: {},
 });
