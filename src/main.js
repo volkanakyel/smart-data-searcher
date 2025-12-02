@@ -1,10 +1,9 @@
-import Vue from 'vue'
-import App from './App.vue'
-import store from './store'
+import { createApp } from "vue";
+import { createPinia } from "pinia";
+import App from "./App.vue";
 
-Vue.config.productionTip = false
+const app = createApp(App);
+const pinia = createPinia();
 
-new Vue({
-  store,
-  render: h => h(App)
-}).$mount('#app')
+app.use(pinia);
+app.mount("#app");
